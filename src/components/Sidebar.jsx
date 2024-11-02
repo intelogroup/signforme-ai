@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   HomeIcon, 
@@ -33,10 +34,10 @@ const Sidebar = ({ open, setOpen }) => {
             to={item.href}
             className={`sidebar-link ${isActive ? 'active' : ''}`}
           >
-            <item.icon
-              className="h-6 w-6"
-              aria-hidden="true"
-            />
+            {React.createElement(item.icon, {
+              className: "h-6 w-6",
+              "aria-hidden": "true"
+            })}
             {item.name}
           </Link>
         );
