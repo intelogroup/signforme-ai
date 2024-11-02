@@ -203,10 +203,10 @@ const Dashboard = () => {
                     alt={doc.assignee.name}
                   />
                   <div className="flex gap-2">
-                    <button className="p-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 transition-colors">
+                    <button className="btn-approve">
                       <CheckIcon className="h-5 w-5" />
                     </button>
-                    <button className="p-2 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-500/10 dark:hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 transition-colors">
+                    <button className="btn-reject">
                       <XMarkIcon className="h-5 w-5" />
                     </button>
                   </div>
@@ -216,9 +216,6 @@ const Dashboard = () => {
           })}
         </div>
       </div>
-
-      {/* Rest of the dashboard content */}
-      {/* ... */}
     </div>
   );
 };
