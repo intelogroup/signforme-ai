@@ -8,17 +8,27 @@ import {
   ArrowTrendingDownIcon,
   ChartBarIcon,
   ChatBubbleLeftRightIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  PlusIcon,
+  ArrowPathIcon,
+  BellAlertIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [showProfile, setShowProfile] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     console.log('Dashboard mounted');
   }, []);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    // Simulate refresh
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
 
   const stats = [
     { 
@@ -144,48 +154,32 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Section with Profile */}
-      <div className="card card-neumorphic">
+      {/* Welcome Section with Upload */}
+      <div className="card card-neumorphic bg-gradient-to-br from-blue-500/10 to-purple-500/10 dark:from-blue-500/20 dark:to-purple-500/20">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Welcome back, {user?.name || 'User'}
+              Welcome back
             </h2>
             <p className="mt-2 text-lg text-gray-600 dark:text-gray-300">
               Here's what's happening with your documents today.
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden lg:block">
-              <ChartBarIcon className="h-16 w-16 text-blue-500/20" />
-            </div>
             <button
-              onClick={() => setShowProfile(!showProfile)}
-              className="relative group"
+              onClick={handleRefresh}
+              className={`p-2 rounded-xl bg-white/50 dark:bg-navy-800/50 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-200 ${
+                isRefreshing ? 'animate-spin' : ''
+              }`}
             >
-              <img
-                className="h-12 w-12 rounded-xl ring-2 ring-white dark:ring-navy-900 shadow-lg transition-transform duration-200 group-hover:scale-105"
-                src={user?.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
-                alt=""
-              />
-              {showProfile && (
-                <div className="absolute right-0 mt-2 w-64 rounded-xl bg-white dark:bg-navy-800 shadow-lg ring-1 ring-black ring-opacity-5 p-4 z-50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <UserCircleIcon className="h-6 w-6 text-gray-400" />
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">Profile</span>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Email: {user?.email || 'user@example.com'}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Role: {user?.role || 'Manager'}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Team: {user?.team || 'Executive'}</p>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <button className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                      Edit Profile
-                    </button>
-                  </div>
-                </div>
-              )}
+              <ArrowPathIcon className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              className="btn-primary bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg transition-all duration-200"
+            >
+              <PlusIcon className="h-5 w-5" />
+              Upload Document
             </button>
           </div>
         </div>
@@ -193,17 +187,26 @@ const Dashboard = () => {
 
       {/* Pending Documents Section */}
       <div className="card card-neumorphic">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <ClockIcon className="h-6 w-6 text-amber-500" />
-          Pending Documents
-        </h3>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <ClockIcon className="h-6 w-6 text-amber-500" />
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Pending Documents
+            </h3>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="p-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <BellAlertIcon className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
         <div className="space-y-4">
           {pendingDocuments.map((doc) => (
-            <div key={doc.id} className="flex items-center justify-between p-4 bg-white/50 dark:bg-navy-800/50 rounded-xl hover:bg-white/80 dark:hover:bg-navy-800/80 transition-all duration-200">
+            <div key={doc.id} className="flex items-center justify-between p-4 bg-white/50 dark:bg-navy-800/50 rounded-xl hover:bg-white/80 dark:hover:bg-navy-800/80 transition-all duration-200 group">
               <div className="flex items-center gap-4">
-                <DocumentIcon className="h-8 w-8 text-gray-400" />
+                <DocumentIcon className="h-8 w-8 text-gray-400 group-hover:text-blue-500 transition-colors" />
                 <div>
-                  <h4 className="text-sm font-medium text-gray-900 dark:text-white">{doc.name}</h4>
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{doc.name}</h4>
                   <div className="mt-1 flex items-center gap-2">
                     <span className={`text-xs font-medium ${getPriorityClass(doc.priority)}`}>
                       {doc.priority.charAt(0).toUpperCase() + doc.priority.slice(1)} Priority
@@ -215,7 +218,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <img
-                className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg"
+                className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg transition-transform group-hover:scale-110"
                 src={doc.assignee.image}
                 alt={doc.assignee.name}
               />
@@ -228,15 +231,22 @@ const Dashboard = () => {
         {/* Chat Feed */}
         <div className="lg:col-span-1">
           <div className="card card-neumorphic">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <ChatBubbleLeftRightIcon className="h-6 w-6 text-blue-500" />
-              Chat Feed
-            </h3>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <ChatBubbleLeftRightIcon className="h-6 w-6 text-blue-500" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Chat Feed
+                </h3>
+              </div>
+              <span className="px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 rounded-lg">
+                Live
+              </span>
+            </div>
             <div className="space-y-4">
               {chatMessages.map((message) => (
-                <div key={message.id} className="flex items-start gap-4">
+                <div key={message.id} className="flex items-start gap-4 group">
                   <img
-                    className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg"
+                    className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg transition-transform group-hover:scale-110"
                     src={message.userImage}
                     alt={message.user}
                   />
@@ -263,7 +273,7 @@ const Dashboard = () => {
                   placeholder="Type a message..."
                   className="flex-1 bg-transparent border-0 focus:ring-0 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 />
-                <button className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300">
+                <button className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">
                   Send
                 </button>
               </div>

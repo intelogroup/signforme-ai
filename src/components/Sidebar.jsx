@@ -77,8 +77,9 @@ const Sidebar = ({ open, setOpen }) => {
           </div>
 
           <div className="flex-shrink-0 flex items-center px-6">
-            <h1 className="logo text-white dark:text-white">
-              SignForMe<span className="logo-ai">.AI</span>
+            <h1 className="text-xl font-bold">
+              <span className="text-gray-900 dark:text-white">SignForMe</span>
+              <span className="text-blue-600 dark:text-blue-400">.AI</span>
             </h1>
           </div>
           <div className="mt-8 flex-1 h-0 overflow-y-auto">
@@ -92,8 +93,9 @@ const Sidebar = ({ open, setOpen }) => {
         <div className="flex flex-col w-72">
           <div className="flex flex-col flex-grow pt-5 bg-white/80 dark:bg-navy-900/80 backdrop-blur-xl overflow-y-auto border-r border-gray-200/20">
             <div className="flex items-center flex-shrink-0 px-6">
-              <h1 className="logo text-white dark:text-white">
-                SignForMe<span className="logo-ai">.AI</span>
+              <h1 className="text-xl font-bold">
+                <span className="text-gray-900 dark:text-white">SignForMe</span>
+                <span className="text-blue-600 dark:text-blue-400">.AI</span>
               </h1>
             </div>
             <div className="mt-8 flex-grow flex flex-col">
