@@ -6,7 +6,6 @@ import {
   ChartBarIcon, 
   Cog6ToothIcon as CogIcon, 
   XMarkIcon,
-  KeyIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
@@ -15,7 +14,6 @@ const navigation = [
   { name: 'Documents', href: '/documents', icon: DocumentTextIcon },
   { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
   { name: 'Team', href: '/team', icon: UserGroupIcon },
-  { name: 'API Keys', href: '/api-keys', icon: KeyIcon },
   { name: 'Settings', href: '/settings', icon: CogIcon },
 ];
 
@@ -61,7 +59,7 @@ const Sidebar = ({ open, setOpen }) => {
 
         {/* Sidebar panel */}
         <div
-          className={`relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-white/80 dark:bg-navy-900/80 backdrop-blur-xl transform transition duration-300 ease-in-out ${
+          className={`relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-gray-100/80 dark:bg-navy-900/80 backdrop-blur-xl transform transition duration-300 ease-in-out ${
             open ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -91,7 +89,7 @@ const Sidebar = ({ open, setOpen }) => {
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:flex-shrink-0">
         <div className="flex flex-col w-72">
-          <div className="flex flex-col flex-grow pt-5 bg-white/80 dark:bg-navy-900/80 backdrop-blur-xl overflow-y-auto border-r border-gray-200/20">
+          <div className="flex flex-col flex-grow pt-5 bg-gray-100/80 dark:bg-navy-900/80 backdrop-blur-xl overflow-y-auto border-r border-gray-200/20">
             <div className="flex items-center flex-shrink-0 px-6">
               <h1 className="text-xl font-bold">
                 <span className="text-gray-900 dark:text-white">SignForMe</span>
