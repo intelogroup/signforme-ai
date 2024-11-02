@@ -58,11 +58,11 @@ const Documents = () => {
   const getStatusBadgeClass = (status) => {
     switch (status) {
       case 'pending':
-        return 'badge-warning';
+        return 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400';
       case 'approved':
-        return 'badge-success';
+        return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400';
       case 'rejected':
-        return 'badge-danger';
+        return 'bg-rose-100 text-rose-800 dark:bg-rose-500/20 dark:text-rose-400';
       default:
         return '';
     }
@@ -71,11 +71,11 @@ const Documents = () => {
   const getPriorityClass = (priority) => {
     switch (priority) {
       case 'high':
-        return 'text-rose-500 dark:text-rose-400';
+        return 'text-rose-500 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-2 py-1 rounded-lg';
       case 'medium':
-        return 'text-amber-500 dark:text-amber-400';
+        return 'text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded-lg';
       case 'low':
-        return 'text-emerald-500 dark:text-emerald-400';
+        return 'text-emerald-500 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-1 rounded-lg';
       default:
         return '';
     }
@@ -96,7 +96,7 @@ const Documents = () => {
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   viewMode === 'list'
-                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                    ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
@@ -107,7 +107,7 @@ const Documents = () => {
                 onClick={() => setViewMode('grid')}
                 className={`p-2 rounded-lg transition-all duration-200 ${
                   viewMode === 'grid'
-                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                    ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
@@ -116,7 +116,7 @@ const Documents = () => {
             </div>
           </div>
 
-          <button type="button" className="btn btn-primary">
+          <button type="button" className="btn-primary bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg transition-all duration-200">
             <PlusIcon className="h-5 w-5" />
             Upload Document
           </button>
@@ -137,7 +137,7 @@ const Documents = () => {
                   {document.name}
                 </h3>
                 <div className="mt-3 flex items-center gap-2">
-                  <span className={`badge ${getStatusBadgeClass(document.status)}`}>
+                  <span className={`badge ${getStatusBadgeClass(document.status)} px-2.5 py-1 rounded-lg text-sm font-medium`}>
                     {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
                   </span>
                   <span className={`text-sm font-medium ${getPriorityClass(document.priority)}`}>
@@ -162,22 +162,22 @@ const Documents = () => {
               </div>
             </div>
             <div className="mt-6 flex gap-3">
-              <button className="btn btn-secondary flex-1">
+              <button className="btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl flex items-center gap-2 flex-1 justify-center shadow-lg transition-all duration-200">
                 <EyeIcon className="h-5 w-5" />
                 Preview
               </button>
-              <button className="btn btn-secondary flex-1">
+              <button className="btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl flex items-center gap-2 flex-1 justify-center shadow-lg transition-all duration-200">
                 <ArrowDownTrayIcon className="h-5 w-5" />
                 Download
               </button>
             </div>
             {document.status === 'pending' && (
               <div className="mt-3 grid grid-cols-2 gap-3">
-                <button className="btn btn-primary">
+                <button className="btn-primary bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 justify-center shadow-lg transition-all duration-200">
                   <CheckIcon className="h-5 w-5" />
                   Approve
                 </button>
-                <button className="btn btn-secondary text-rose-500 dark:text-rose-400 hover:text-rose-600 dark:hover:text-rose-300">
+                <button className="btn-secondary bg-rose-100 hover:bg-rose-200 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 text-rose-600 dark:text-rose-400 px-4 py-2 rounded-xl flex items-center gap-2 justify-center shadow-lg transition-all duration-200 hover:shadow-rose-500/20 dark:hover:shadow-rose-500/40 shadow-[0_0_15px_rgba(244,63,94,0.2)]">
                   <XMarkIcon className="h-5 w-5" />
                   Reject
                 </button>
