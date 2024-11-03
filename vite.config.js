@@ -11,7 +11,11 @@ export default defineConfig({
   },
   optimizeDeps: {
     force: true,
-    include: ['react', 'react-dom', '@heroicons/react']
+    include: [
+      'react',
+      'react-dom',
+      '@heroicons/react/24/outline'
+    ]
   },
   build: {
     commonjsOptions: {
@@ -20,13 +24,10 @@ export default defineConfig({
     rollupOptions: {
       external: [],
       output: {
-        manualChunks: undefined
+        manualChunks: {
+          'heroicons': ['@heroicons/react/24/outline']
+        }
       }
-    }
-  },
-  resolve: {
-    alias: {
-      '@heroicons/react': '@heroicons/react'
     }
   }
 })
