@@ -7,7 +7,9 @@ import {
   CameraIcon,
   GlobeAltIcon,
   KeyIcon,
-  DevicePhoneMobileIcon
+  DevicePhoneMobileIcon,
+  DocumentTextIcon,
+  ClockIcon
 } from '@heroicons/react/24/outline';
 
 const Settings = () => {
@@ -142,7 +144,7 @@ const Settings = () => {
                         <div className="flex items-center gap-3">
                           {key === 'emailNotifications' && <GlobeAltIcon className="h-5 w-5 text-blue-500" />}
                           {key === 'pushNotifications' && <DevicePhoneMobileIcon className="h-5 w-5 text-violet-500" />}
-                          {key === 'documentUpdates' && <DocumentIcon className="h-5 w-5 text-emerald-500" />}
+                          {key === 'documentUpdates' && <DocumentTextIcon className="h-5 w-5 text-emerald-500" />}
                           {key === 'deadlineReminders' && <ClockIcon className="h-5 w-5 text-amber-500" />}
                           <div>
                             <p className="text-sm font-medium text-gray-900 dark:text-white">

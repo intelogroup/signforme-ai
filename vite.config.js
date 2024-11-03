@@ -11,7 +11,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     force: true,
-    include: ['react', 'react-dom', '@heroicons/react/24/outline']
+    include: ['react', 'react-dom', '@heroicons/react']
   },
   build: {
     commonjsOptions: {
@@ -26,7 +26,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@heroicons/react': '@heroicons/react/24/outline'
+      '@heroicons/react': '@heroicons/react'
     }
   }
 })
