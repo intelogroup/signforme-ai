@@ -2,15 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react({
-    jsxRuntime: 'automatic',
-    jsxImportSource: 'react',
-    babel: {
-      plugins: [
-        ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }]
-      ]
-    }
-  })],
+  plugins: [
+    react({
+      babel: {
+        plugins: ['@babel/plugin-transform-react-jsx']
+      }
+    })
+  ],
   server: {
     port: 4000,
     proxy: {
@@ -26,11 +24,11 @@ export default defineConfig({
     include: [
       'react',
       'react-dom',
-      'react/jsx-runtime',
       '@heroicons/react/24/outline'
     ]
   },
   build: {
+    outDir: 'dist',
     commonjsOptions: {
       include: []
     },
@@ -42,10 +40,5 @@ export default defineConfig({
         }
       }
     }
-  },
-  esbuild: {
-    jsxInject: `import React from 'react'`,
-    jsxFactory: 'React.createElement',
-    jsxFragment: 'React.Fragment'
   }
 })
