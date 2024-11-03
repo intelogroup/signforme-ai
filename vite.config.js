@@ -12,6 +12,17 @@ export default defineConfig({
   server: {
     port: 4000
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'heroicons': ['@heroicons/react/24/outline']
+        }
+      }
+    }
+  },
   optimizeDeps: {
     force: true,
     include: [
@@ -19,18 +30,5 @@ export default defineConfig({
       'react-dom',
       '@heroicons/react/24/outline'
     ]
-  },
-  build: {
-    commonjsOptions: {
-      include: []
-    },
-    rollupOptions: {
-      external: [],
-      output: {
-        manualChunks: {
-          'heroicons': ['@heroicons/react/24/outline']
-        }
-      }
-    }
   }
 })
