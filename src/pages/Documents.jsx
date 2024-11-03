@@ -88,7 +88,8 @@ const Documents = () => {
 
   return (
     <div className="space-y-8 py-8">
-      <div className="flex items-center justify-between">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
           Documents
         </h2>
@@ -104,6 +105,7 @@ const Documents = () => {
                     ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
+                aria-label="List view"
               >
                 <ListIcon className="h-5 w-5" />
               </button>
@@ -115,13 +117,18 @@ const Documents = () => {
                     ? 'bg-blue-500/20 text-blue-600 dark:text-blue-400'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
+                aria-label="Grid view"
               >
                 <GridIcon className="h-5 w-5" />
               </button>
             </div>
           </div>
 
-          <button type="button" className="btn-primary bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg transition-all duration-200">
+          <button 
+            type="button" 
+            className="btn-primary bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg transition-all duration-200"
+            aria-label="Upload new document"
+          >
             <PlusIcon className="h-5 w-5" />
             Upload Document
           </button>
@@ -141,34 +148,50 @@ const Documents = () => {
             {pendingDocuments.map((document) => (
               <div
                 key={document.id}
-                className="flex items-center justify-between p-4 bg-white/50 dark:bg-navy-800/50 rounded-xl hover:bg-white/80 dark:hover:bg-navy-800/80 transition-all duration-200 group"
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/50 dark:bg-navy-800/50 rounded-xl hover:bg-white/80 dark:hover:bg-navy-800/80 transition-all duration-200 group gap-4"
               >
                 <div className="flex items-center gap-4">
                   <DocumentMagnifyingGlassIcon className="h-8 w-8 text-gray-400 group-hover:text-blue-500 transition-colors" />
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{document.name}</h4>
-                    <div className="mt-1 flex items-center gap-2">
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                      {document.name}
+                    </h4>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
                       <span className={`badge ${getStatusBadgeClass(document.status)} px-2.5 py-1 rounded-lg text-sm font-medium`}>
                         {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
                       </span>
                       <span className={`text-sm font-medium ${getPriorityClass(document.priority)}`}>
                         {document.priority.charAt(0).toUpperCase() + document.priority.slice(1)} Priority
                       </span>
+                      <span className="text-sm text-gray-500">
+                        Due {new Date(document.deadline).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <img
-                    className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg"
-                    src={document.assignee.image}
-                    alt={document.assignee.name}
-                  />
+                <div className="flex items-center justify-between sm:justify-end gap-4">
+                  <div className="flex items-center gap-2">
+                    <img
+                      className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg"
+                      src={document.assignee.image}
+                      alt={document.assignee.name}
+                    />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">{document.assignee.name}</span>
+                  </div>
                   <div className="flex gap-2">
-                    <button className="btn-approve">
+                    <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors duration-200"
+                      aria-label="Approve document"
+                    >
                       <CheckIcon className="h-5 w-5" />
+                      <span>Approve</span>
                     </button>
-                    <button className="btn-reject">
+                    <button 
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors duration-200"
+                      aria-label="Reject document"
+                    >
                       <XMarkIcon className="h-5 w-5" />
+                      <span>Reject</span>
                     </button>
                   </div>
                 </div>
@@ -191,7 +214,7 @@ const Documents = () => {
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {document.name}
                 </h3>
-                <div className="mt-3 flex items-center gap-2">
+                <div className="mt-3 flex flex-wrap items-center gap-2">
                   <span className={`badge ${getStatusBadgeClass(document.status)} px-2.5 py-1 rounded-lg text-sm font-medium`}>
                     {document.status.charAt(0).toUpperCase() + document.status.slice(1)}
                   </span>
@@ -217,11 +240,17 @@ const Documents = () => {
               </div>
             </div>
             <div className="mt-6 flex gap-3">
-              <button className="btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl flex items-center gap-2 flex-1 justify-center shadow-lg transition-all duration-200">
+              <button 
+                className="btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl flex items-center gap-2 flex-1 justify-center shadow-lg transition-all duration-200"
+                aria-label="Preview document"
+              >
                 <EyeIcon className="h-5 w-5" />
                 Preview
               </button>
-              <button className="btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl flex items-center gap-2 flex-1 justify-center shadow-lg transition-all duration-200">
+              <button 
+                className="btn-secondary bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl flex items-center gap-2 flex-1 justify-center shadow-lg transition-all duration-200"
+                aria-label="Download document"
+              >
                 <ArrowDownTrayIcon className="h-5 w-5" />
                 Download
               </button>
