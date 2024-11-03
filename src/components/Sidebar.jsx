@@ -21,7 +21,7 @@ const Sidebar = ({ open, setOpen }) => {
   const location = useLocation();
 
   const NavLinks = () => (
-    <nav className="flex-1 px-4 pb-4 space-y-1">
+    <nav className="flex-1 px-4 pb-4 space-y-1" aria-label="Main navigation">
       {navigation.map((item) => {
         const isActive = location.pathname === item.href;
         return (
@@ -29,12 +29,10 @@ const Sidebar = ({ open, setOpen }) => {
             key={item.name}
             to={item.href}
             className={`sidebar-link ${isActive ? 'active' : ''}`}
+            aria-current={isActive ? 'page' : undefined}
           >
-            {React.createElement(item.icon, {
-              className: "h-6 w-6",
-              "aria-hidden": "true"
-            })}
-            {item.name}
+            <item.icon className="h-6 w-6" aria-hidden="true" />
+            <span>{item.name}</span>
           </Link>
         );
       })}
@@ -55,6 +53,7 @@ const Sidebar = ({ open, setOpen }) => {
             open ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setOpen(false)}
+          aria-hidden="true"
         />
 
         {/* Sidebar panel */}
@@ -62,14 +61,17 @@ const Sidebar = ({ open, setOpen }) => {
           className={`relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-gray-100/80 dark:bg-navy-900/80 backdrop-blur-xl transform transition duration-300 ease-in-out ${
             open ? 'translate-x-0' : '-translate-x-full'
           }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation"
         >
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               type="button"
-              className="ml-1 flex items-center justify-center h-10 w-10 rounded-xl"
+              className="ml-1 flex items-center justify-center h-10 w-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               onClick={() => setOpen(false)}
+              aria-label="Close sidebar"
             >
-              <span className="sr-only">Close sidebar</span>
               <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
             </button>
           </div>

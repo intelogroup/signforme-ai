@@ -16,18 +16,31 @@ console.log('API Configuration:', {
 
 const headers = {
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${API_KEY}`
+  'Authorization': `Bearer ${API_KEY}`,
+  // Add Accept header to explicitly request JSON
+  'Accept': 'application/json'
+};
+
+const isHtmlResponse = (text) => {
+  return text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html');
 };
 
 const handleResponse = async (response, endpoint) => {
   console.log(`Response from ${endpoint}:`, {
     status: response.status,
     statusText: response.statusText,
+    contentType: response.headers.get('content-type'),
     headers: Object.fromEntries(response.headers.entries())
   });
 
   const text = await response.text();
   console.log(`Raw response from ${endpoint}:`, text);
+
+  // Check if we received HTML instead of JSON
+  if (isHtmlResponse(text)) {
+    console.error(`Received HTML instead of JSON from ${endpoint}`);
+    throw new Error('Received HTML response instead of JSON. Please check the API URL configuration.');
+  }
 
   if (!response.ok) {
     console.error(`API Error (${endpoint}):`, {
@@ -49,7 +62,7 @@ const handleResponse = async (response, endpoint) => {
       error: e.message,
       text: text
     });
-    throw new Error(`Failed to parse JSON response from ${endpoint}: ${e.message}`);
+    throw new Error(`Invalid JSON response from ${endpoint}. Please check the API configuration.`);
   }
 };
 
@@ -61,11 +74,16 @@ const fetchWithLogging = async (endpoint, options = {}) => {
   });
 
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(url, {
+      ...options,
+      // Add credentials if needed
+      credentials: 'include'
+    });
     return await handleResponse(response, endpoint);
   } catch (error) {
     console.error(`Fetch Error (${endpoint}):`, error);
-    throw error;
+    // Provide more user-friendly error message
+    throw new Error(`Failed to connect to the API. Please check your network connection and API configuration.`);
   }
 };
 
@@ -73,6 +91,12 @@ export const api = {
   // Document operations
   async getDocuments() {
     try {
+      // First verify API connection
+      const testResponse = await fetch(`${API_URL}/health`, { headers });
+      if (!testResponse.ok) {
+        throw new Error('API is not accessible. Please check the API URL configuration.');
+      }
+
       const [documents, users] = await Promise.all([
         fetchWithLogging('/documents', { headers }),
         fetchWithLogging('/users', { headers })
