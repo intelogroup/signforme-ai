@@ -10,14 +10,7 @@ export default defineConfig({
     })
   ],
   server: {
-    port: 4000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
+    port: 4000
   },
   optimizeDeps: {
     force: true,
@@ -28,7 +21,6 @@ export default defineConfig({
     ]
   },
   build: {
-    outDir: 'dist',
     commonjsOptions: {
       include: []
     },
