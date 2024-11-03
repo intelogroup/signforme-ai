@@ -1,4 +1,4 @@
-import React from 'react';
+import { default as React } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   HomeIcon, 
