@@ -7,9 +7,11 @@ import {
   MagnifyingGlassIcon 
 } from '@heroicons/react/24/outline';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 const Header = ({ onMenuClick }) => {
   const { isDark, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [notifications] = useState([
     { id: 1, message: 'New document awaiting approval', time: '2m ago' },
@@ -100,51 +102,53 @@ const Header = ({ onMenuClick }) => {
           </div>
 
           {/* Profile dropdown */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-200"
-            >
-              <div className="relative">
-                <img
-                  className="h-10 w-10 rounded-xl object-cover ring-2 ring-white dark:ring-navy-900 shadow-sm"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="John Doe"
-                />
-                <div className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-white dark:ring-navy-900" />
-              </div>
-              <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">John Doe</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Manager</p>
-              </div>
-            </button>
-
-            {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-48 glass-dropdown rounded-xl overflow-hidden">
-                <div className="py-1">
-                  <a
-                    href="#profile"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
-                  >
-                    Your Profile
-                  </a>
-                  <a
-                    href="#settings"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
-                  >
-                    Settings
-                  </a>
-                  <a
-                    href="#signout"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
-                  >
-                    Sign out
-                  </a>
+          {user && (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-200"
+              >
+                <div className="relative">
+                  <img
+                    className="h-10 w-10 rounded-xl object-cover ring-2 ring-white dark:ring-navy-900 shadow-sm"
+                    src={user.image}
+                    alt={user.name}
+                  />
+                  <div className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-400 ring-2 ring-white dark:ring-navy-900" />
                 </div>
-              </div>
-            )}
-          </div>
+                <div className="hidden md:block text-left">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{user.role}</p>
+                </div>
+              </button>
+
+              {showProfileMenu && (
+                <div className="absolute right-0 mt-2 w-48 glass-dropdown rounded-xl overflow-hidden">
+                  <div className="py-1">
+                    <a
+                      href="#profile"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
+                    >
+                      Your Profile
+                    </a>
+                    <a
+                      href="#settings"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
+                    >
+                      Settings
+                    </a>
+                    <button
+                      onClick={logout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>

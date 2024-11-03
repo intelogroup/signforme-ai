@@ -18,18 +18,54 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../services/api';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchDocuments = async () => {
+    try {
+      console.log('Fetching documents...');
+      setLoading(true);
+      setError(null);
+      const data = await api.getDocuments();
+      console.log('Documents fetched:', data);
+      setDocuments(data);
+    } catch (err) {
+      console.error('Error fetching documents:', err);
+      setError(err.message || 'Failed to fetch documents');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    console.log('Dashboard mounted');
+    console.log('Dashboard mounted, fetching initial data...');
+    fetchDocuments();
   }, []);
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
+    console.log('Refreshing documents...');
     setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 1000);
+    await fetchDocuments();
+    setIsRefreshing(false);
+  };
+
+  const handleStatusChange = async (documentId, newStatus) => {
+    try {
+      console.log('Updating document status:', { documentId, newStatus });
+      await api.updateDocumentStatus(documentId, newStatus, user?.id);
+      console.log('Status updated successfully');
+      // Refresh documents after status update
+      fetchDocuments();
+    } catch (err) {
+      console.error('Error updating document status:', err);
+      setError('Failed to update document status');
+    }
   };
 
   const getDocumentIcon = (type) => {
@@ -44,64 +80,6 @@ const Dashboard = () => {
         return DocumentIcon;
     }
   };
-
-  const pendingDocuments = [
-    {
-      id: 1,
-      name: 'Q4 Financial Report.pdf',
-      type: 'pdf',
-      priority: 'high',
-      deadline: '2024-03-15',
-      assignee: {
-        name: 'John Doe',
-        image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-      }
-    },
-    {
-      id: 2,
-      name: 'Marketing Budget 2024.xlsx',
-      type: 'excel',
-      priority: 'medium',
-      deadline: '2024-03-10',
-      assignee: {
-        name: 'Jane Smith',
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-      }
-    },
-    {
-      id: 3,
-      name: 'Product Launch Banner.jpg',
-      type: 'image',
-      priority: 'medium',
-      deadline: '2024-03-08',
-      assignee: {
-        name: 'Mike Johnson',
-        image: 'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-      }
-    },
-    {
-      id: 4,
-      name: 'Legal Contract Draft.pdf',
-      type: 'pdf',
-      priority: 'high',
-      deadline: '2024-03-12',
-      assignee: {
-        name: 'Sarah Wilson',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-      }
-    },
-    {
-      id: 5,
-      name: 'Sales Report Q1.xlsx',
-      type: 'excel',
-      priority: 'low',
-      deadline: '2024-03-20',
-      assignee: {
-        name: 'Tom Brown',
-        image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-      }
-    }
-  ];
 
   const getPriorityClass = (priority) => {
     switch (priority) {
@@ -128,6 +106,8 @@ const Dashboard = () => {
         return 'text-gray-400';
     }
   };
+
+  const pendingDocuments = documents.filter(doc => doc.status === 'pending');
 
   return (
     <div className="space-y-8">
@@ -162,60 +142,85 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Pending Documents Section */}
-      <div className="card card-neumorphic bg-white dark:bg-gray-800/50">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <ClockIcon className="h-6 w-6 text-amber-500" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Pending Documents
-            </h3>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="p-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
-              <BellAlertIcon className="h-5 w-5" />
-            </button>
-          </div>
+      {/* Error Message */}
+      {error && (
+        <div className="bg-rose-100 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 p-4 rounded-xl">
+          <p>{error}</p>
         </div>
-        <div className="space-y-4">
-          {pendingDocuments.map((doc) => {
-            const DocIcon = getDocumentIcon(doc.type);
-            return (
-              <div key={doc.id} className="flex items-center justify-between p-4 bg-white/50 dark:bg-navy-800/50 rounded-xl hover:bg-white/80 dark:hover:bg-navy-800/80 transition-all duration-200 group">
-                <div className="flex items-center gap-4">
-                  <DocIcon className={`h-8 w-8 ${getIconColorClass(doc.type)} group-hover:scale-110 transition-transform`} />
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{doc.name}</h4>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className={`text-xs font-medium ${getPriorityClass(doc.priority)}`}>
-                        {doc.priority.charAt(0).toUpperCase() + doc.priority.slice(1)} Priority
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        Due {new Date(doc.deadline).toLocaleDateString()}
-                      </span>
+      )}
+
+      {/* Loading State */}
+      {loading ? (
+        <div className="flex justify-center items-center h-32">
+          <ArrowPathIcon className="h-8 w-8 animate-spin text-blue-500" />
+        </div>
+      ) : (
+        /* Pending Documents Section */
+        <div className="card card-neumorphic bg-white dark:bg-gray-800/50">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <ClockIcon className="h-6 w-6 text-amber-500" />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Pending Documents ({pendingDocuments.length})
+              </h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-xl bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <BellAlertIcon className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+          <div className="space-y-4">
+            {pendingDocuments.map((doc) => {
+              const DocIcon = getDocumentIcon(doc.type);
+              return (
+                <div key={doc.id} className="flex items-center justify-between p-4 bg-white/50 dark:bg-navy-800/50 rounded-xl hover:bg-white/80 dark:hover:bg-navy-800/80 transition-all duration-200 group">
+                  <div className="flex items-center gap-4">
+                    <DocIcon className={`h-8 w-8 ${getIconColorClass(doc.type)} group-hover:scale-110 transition-transform`} />
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">{doc.name}</h4>
+                      <div className="mt-1 flex items-center gap-2">
+                        <span className={`text-xs font-medium ${getPriorityClass(doc.priority)}`}>
+                          {doc.priority.charAt(0).toUpperCase() + doc.priority.slice(1)} Priority
+                        </span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Due {new Date(doc.deadline).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <img
+                      className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg transition-transform group-hover:scale-110"
+                      src={doc.assignee?.image}
+                      alt={doc.assignee?.name}
+                    />
+                    <div className="flex gap-2">
+                      <button 
+                        className="btn-approve"
+                        onClick={() => handleStatusChange(doc.id, 'approved')}
+                      >
+                        <CheckIcon className="h-5 w-5" />
+                      </button>
+                      <button 
+                        className="btn-reject"
+                        onClick={() => handleStatusChange(doc.id, 'rejected')}
+                      >
+                        <XMarkIcon className="h-5 w-5" />
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <img
-                    className="h-8 w-8 rounded-lg ring-2 ring-white dark:ring-navy-900 shadow-lg transition-transform group-hover:scale-110"
-                    src={doc.assignee.image}
-                    alt={doc.assignee.name}
-                  />
-                  <div className="flex gap-2">
-                    <button className="btn-approve">
-                      <CheckIcon className="h-5 w-5" />
-                    </button>
-                    <button className="btn-reject">
-                      <XMarkIcon className="h-5 w-5" />
-                    </button>
-                  </div>
-                </div>
+              );
+            })}
+            {pendingDocuments.length === 0 && (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                No pending documents
               </div>
-            );
-          })}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

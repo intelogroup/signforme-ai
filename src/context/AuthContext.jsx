@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { api } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -11,58 +12,55 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
+    // For demo purposes, automatically log in as the first user
+    const initializeAuth = async () => {
+      try {
+        const users = await api.getUsers();
+        if (users.length > 0) {
+          setUser(users[0]); // Set the first user as the current user
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // For demo purposes, set a default user
-  useEffect(() => {
-    if (!user) {
-      setUser({
-        id: 1,
-        name: 'John Doe',
-        email: 'john@example.com',
-        role: 'manager'
-      });
-    }
+    initializeAuth();
   }, []);
 
-  const login = async (credentials) => {
-    setLoading(true);
+  const login = async (userId) => {
     try {
-      // Implement actual login logic here
-      setUser({ id: 1, name: 'John Doe', email: 'john@example.com', role: 'manager' });
+      const userData = await api.getUser(userId);
+      setUser(userData);
+      return true;
     } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
+      console.error('Error logging in:', error);
+      return false;
     }
   };
 
-  const logout = async () => {
-    setLoading(true);
-    try {
-      setUser(null);
-      localStorage.removeItem('user');
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
+  const logout = () => {
+    setUser(null);
   };
+
+  const value = {
+    user,
+    loading,
+    login,
+    logout,
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
