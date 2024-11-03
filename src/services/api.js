@@ -1,4 +1,10 @@
 const API_URL = import.meta.env.VITE_API_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
+
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${API_KEY}`
+};
 
 export const api = {
   // Document operations
@@ -6,8 +12,8 @@ export const api = {
     try {
       // Fetch documents and users
       const [documentsResponse, usersResponse] = await Promise.all([
-        fetch(`${API_URL}/documents`),
-        fetch(`${API_URL}/users`)
+        fetch(`${API_URL}/documents`, { headers }),
+        fetch(`${API_URL}/users`, { headers })
       ]);
 
       if (!documentsResponse.ok || !usersResponse.ok) {
@@ -32,7 +38,7 @@ export const api = {
   },
 
   async getDocument(id) {
-    const response = await fetch(`${API_URL}/documents/${id}`);
+    const response = await fetch(`${API_URL}/documents/${id}`, { headers });
     if (!response.ok) throw new Error('Failed to fetch document');
     return response.json();
   },
@@ -42,7 +48,7 @@ export const api = {
       // Update document status
       const documentResponse = await fetch(`${API_URL}/documents/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           status,
           updatedAt: new Date().toISOString()
@@ -53,7 +59,7 @@ export const api = {
       // Add to document history
       const historyResponse = await fetch(`${API_URL}/documentHistory`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           documentId: id,
           userId,
@@ -67,7 +73,7 @@ export const api = {
       const updatedDoc = await documentResponse.json();
       
       // Fetch the assignee data
-      const userResponse = await fetch(`${API_URL}/users/${updatedDoc.assigneeId}`);
+      const userResponse = await fetch(`${API_URL}/users/${updatedDoc.assigneeId}`, { headers });
       if (!userResponse.ok) throw new Error('Failed to fetch user data');
       const assignee = await userResponse.json();
 
@@ -84,7 +90,7 @@ export const api = {
   async createDocument(document) {
     const response = await fetch(`${API_URL}/documents`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         ...document,
         status: 'pending',
@@ -98,33 +104,33 @@ export const api = {
 
   // User operations
   async getUsers() {
-    const response = await fetch(`${API_URL}/users`);
+    const response = await fetch(`${API_URL}/users`, { headers });
     if (!response.ok) throw new Error('Failed to fetch users');
     return response.json();
   },
 
   async getUser(id) {
-    const response = await fetch(`${API_URL}/users/${id}`);
+    const response = await fetch(`${API_URL}/users/${id}`, { headers });
     if (!response.ok) throw new Error('Failed to fetch user');
     return response.json();
   },
 
   // Team operations
   async getTeams() {
-    const response = await fetch(`${API_URL}/teams`);
+    const response = await fetch(`${API_URL}/teams`, { headers });
     if (!response.ok) throw new Error('Failed to fetch teams');
     return response.json();
   },
 
   async getTeam(id) {
-    const response = await fetch(`${API_URL}/teams/${id}`);
+    const response = await fetch(`${API_URL}/teams/${id}`, { headers });
     if (!response.ok) throw new Error('Failed to fetch team');
     return response.json();
   },
 
   // Document History operations
   async getDocumentHistory(documentId) {
-    const response = await fetch(`${API_URL}/documentHistory?documentId=${documentId}`);
+    const response = await fetch(`${API_URL}/documentHistory?documentId=${documentId}`, { headers });
     if (!response.ok) throw new Error('Failed to fetch document history');
     return response.json();
   }
